@@ -7,6 +7,8 @@
 % http://www.amzi.com/manuals/samples/prolog/duckworld/dw_data.pro
 nextto(pen, yard).
 nextto(yard, house).
+nextto(house, pond).
+nextto(yard, pond).
 
 loc(egg,pen).
 loc(ducks,pen).
@@ -37,7 +39,13 @@ ducks :-
 	loc(you, pen),
 	move(ducks, yard),
 	write("The ducks have run into the yard."), nl.
+ducks :-
+	loc(ducks, yard),
+	loc(you, yard),
+	move(ducks, pond),
+	write("The ducks have run into the pond."), nl.
 ducks.
+
 
 fox :-
 	loc(ducks, yard),
@@ -51,6 +59,7 @@ goto(X) :-
 	connect(L, X),
 	move(you, X),
 	write("You are in the "), write(X), nl.
+
 goto(_) :-
 	write("You can't get there from here."), nl.
 
