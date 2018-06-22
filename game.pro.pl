@@ -13,6 +13,8 @@ nextto(yard, pond).
 loc(egg,pen).
 loc(ducks,pen).
 loc(you,pen).
+loc(farmer,yard).
+loc(fox,forest).
 
 move(Item, Place) :-
 	retract( loc(Item, _) ),
@@ -30,9 +32,21 @@ done :-
 	loc(egg, you),
 	write("Thanks for getting the egg."), nl.
 
+done :-
+	loc(ducks, limbo),
+	write("GAME OVER"), nl.
+
+done :-
+	loc(fox, limbo),
+	write("Congratulations! You got rid of the threat that that evil fox represented!"),
+	nl,
+	write("You don't need to get the egg anymore. What you've done is more than enough!"),
+	nl.
+
 demons :-
 	ducks,
-	fox.
+	fox,
+	farmer.
 
 ducks :-
 	loc(ducks, pen),
@@ -53,6 +67,15 @@ fox :-
 	write("The fox has taken a duck."), nl.
 fox.
 
+farmer :-
+    loc(you, yard),
+    loc(farmer, yard),
+    loc(ducks, X),
+		loc(fox, Y),
+    X \= limbo,
+		Y \= limbo,
+    write("The farmer says hello."), nl.
+farmer.
 
 goto(X) :-
 	loc(you, L),
@@ -112,6 +135,36 @@ report :-
         findall(X:Y, loc(X,Y), L),
         write(L), nl.
 
+shoot(farmer) :-
+	loc(you, yard),
+	move(farmer, limbo),
+	write("Are you crazy!? You've shot the farmer, you bastard! Now he is dead!"),
+	nl.
+
+shoot(farmer) :-
+	write("The farmer is not here."), nl.
+
+shoot(ducks) :-
+	loc(you, L),
+	loc(ducks, L),
+	move(ducks, limbo),
+	write("What are you doing!? You have killed your own ducks!"), nl.
+
+shoot(ducks) :-
+	write("The ducks are not here."), nl.
+
+shoot(fox) :-
+	loc(you, yard),
+	move(fox, limbo),
+	write("Wow!!! Nice aim!!! You've just decimated that evil fox!"),
+	nl.
+
+shoot(fox) :-
+	write("The fox is not here."), nl.
+
+shoot(_) :-
+	write("You can't shoot that."), nl.
+
 do(goto(X)) :- !, goto(X).
 do(chase(X)) :- !, chase(X).
 do(take(X)) :- !, take(X).
@@ -120,6 +173,7 @@ do(help) :- !, instructions.
 do(quit) :- !.
 do(listing) :- !, listing.
 do(report) :- !, report.
+do(shoot(X)) :- !, shoot(X).
 do(X) :- write("unknown command"), write(X), nl, instructions.
 
 go :- done.
@@ -141,6 +195,7 @@ instructions :-
 	write("Enter commands at the prompt as Prolog terms"), nl,
 	write("ending in period:"), nl,
 	write("  goto(X). - where X is a place to go to."), nl,
+	write("  shoot(X). - where X is your shooting target."), nl,
 	write("  take(X). - where X is a thing to take."), nl,
 	write("  chase(X). - chasing ducks sends them to the pen."), nl,
 	write("  look. - the state of the game."), nl,
