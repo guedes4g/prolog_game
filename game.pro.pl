@@ -135,11 +135,27 @@ report :-
         findall(X:Y, loc(X,Y), L),
         write(L), nl.
 
+attempt :-
+	random(X),
+	X >= 0.5.
+
+kill(X) :-
+	move(X, limbo).
+
+miss :-
+	write("Oh-oh! Looks like you missed it. Better luck next time!"),
+	nl.
+
 shoot(farmer) :-
 	loc(you, yard),
-	move(farmer, limbo),
+	attempt,
+	kill(farmer),
 	write("Are you crazy!? You've shot the farmer, you bastard! Now he is dead!"),
 	nl.
+
+shoot(farmer) :-
+	loc(you, yard),
+	miss.
 
 shoot(farmer) :-
 	write("The farmer is not here."), nl.
@@ -147,17 +163,28 @@ shoot(farmer) :-
 shoot(ducks) :-
 	loc(you, L),
 	loc(ducks, L),
-	move(ducks, limbo),
+	attempt,
+	kill(ducks),
 	write("What are you doing!? You have killed your own ducks!"), nl.
+
+shoot(ducks) :-
+	loc(you, L),
+	loc(ducks, L),
+	miss.
 
 shoot(ducks) :-
 	write("The ducks are not here."), nl.
 
 shoot(fox) :-
 	loc(you, yard),
-	move(fox, limbo),
+	attempt,
+	kill(fox),
 	write("Wow!!! Nice aim!!! You've just decimated that evil fox!"),
 	nl.
+
+shoot(fox) :-
+	loc(you, yard),
+	miss.
 
 shoot(fox) :-
 	write("The fox is not here."), nl.
