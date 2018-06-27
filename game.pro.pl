@@ -1,9 +1,27 @@
 %
+% 	AUTORES:
+% FELIPE GUEDES
+% RAFAEL RITTER
+%
 % http://www.amzi.com/manuals/samples/prolog/duckworld/
+% Referências:
+% http://www.swi-prolog.org/pldoc/man?section=random
+% Stackoverflow
+%
+% Sequência de comandos para ganhar o jogo:
+% goto(yard).
+% shoot(fox). <- repetir até acertar o tiro
+%
+% Sequência de comandos para perder o jogo:
+% goto(yard).
+% goto(pen).
+% goto(yard).
+% goto(pond).
+% shoot(ducks). <- repetir até acertar o tiro
 %
 %
 :- dynamic(loc/2).
-
+:- dynamic(userName/1).
 % http://www.amzi.com/manuals/samples/prolog/duckworld/dw_data.pro
 nextto(pen, yard).
 nextto(yard, house).
@@ -26,7 +44,7 @@ connect(X,Y) :-
         nextto(X,Y).
 connect(X,Y) :-
         nextto(Y,X).
-
+		
 done :-
 	loc(you, house),
 	loc(egg, you),
@@ -42,6 +60,7 @@ done :-
 	nl,
 	write("You don't need to get the egg anymore. What you've done is more than enough!"),
 	nl.
+
 
 demons :-
 	ducks,
@@ -215,6 +234,8 @@ go :- write(" Quitter "), nl.
 
 instructions :-
 	nl,
+    userName(X),
+    write(X),nl,
 	write("You start in the house, the ducks and an egg"), nl,
 	write("are in the pen.  You have to get the egg"), nl,
 	write("without losing any ducks."), nl,
@@ -232,6 +253,11 @@ instructions :-
 
 game :-
 	write(" Welcome to Duck World "),nl,
+	write("What is your name"), nl,
+	read(X),
+	assert(userName(X)),
 	instructions,
-	write(" Go get an egg "),nl,
+	write(" Go get an egg, "), 
+    write(X),nl,
+    
 	go.
